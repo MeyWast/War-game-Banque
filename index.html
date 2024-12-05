@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="js/index.js" defer></script>
+<script src="js/ajax.js" defer></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,11 +80,12 @@
     <div class="login-container">
         <img src="ISEN-Brest-1.png" alt="Bank Logo" class="logo">
         <h2>Login</h2>
-        <form action="/login" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" class="button">Login</button>
-        </form>
+        <div>
+            <input type="text" name="username" id="user" placeholder="Username" required>
+            <input type="password" name="password" id="pwd" placeholder="Password" required>
+            <button type="submit" id="btn-submit" class="button">Login</button>
+        </div>
+        <p id="form-messages"></p>
         <button onclick="window.location.href='account.html'" class="button">Create Account</button>
     </div>
 </body>

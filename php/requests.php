@@ -1,5 +1,8 @@
 <?php
 require_once('database.php');
+
+session_start();
+
 $db = dbConnect();
 
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -19,7 +22,13 @@ switch ($requestRessource) {
 
     case 'register':
         if ($requestMethod == 'POST') {
-            registerUser($db);
+            registerUser($db, $_POST['username'], $_POST['password']);
+        }
+        break;
+
+    case 'synthese':
+        if ($requestMethod == 'GET') {
+            getinfoUser($db, $_SESSION['username']);
         }
         break;
 
@@ -52,7 +61,7 @@ function authenticateUser($db, $username, $password) {
 
     if (!$username || !$password) {
         $message = $username + $password;
-        echo json_encode(['ok' => false, 'messages' => $message]);
+        echo json_encode(['ok' => false, 'messages' => ['Veuillez renseigner l\'username et le mot de passe']]);
         return;
     }
 
@@ -61,130 +70,64 @@ function authenticateUser($db, $username, $password) {
     $stmt->bindparam(':password', $password);
     $stmt->execute();
     $row = $stmt->rowCount();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if($row > 0) {
         echo json_encode(['ok' => true, 'messages' => ['Authentification réussie']]);
     } else {
         echo json_encode(['ok' => false, 'messages' => ['Authentification échouée']]);
     }
+
+    $_SESSION['username'] = $username;
+}
+
+function getinfoUser($db, $username) {
+    $stmt = $db->prepare("SELECT id, balance FROM users WHERE username = :username");
+    $stmt->bindparam(':username', $username);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmt_tr = $db->prepare("SELECT amount, description FROM transactions WHERE user_give = :id OR user_get = :id");
+    $stmt_tr->bindparam(':id', $result['id']);
+    $stmt_tr->execute();
+    $row = $stmt_tr->rowCount();
+    $transactions = $stmt_tr->fetchAll(PDO::FETCH_ASSOC);
+
+
+    if($result) {
+        echo json_encode(['ok' => true, 'nbTr' => $row, 'transactions' => $transactions, 'balance' => $result['balance']]);
+    } else {
+        echo json_encode(['ok' => false, 'messages' => ['Erreur lors de la récupération du solde']]);
+}
 }
 
 // Fonction pour enregistrer un utilisateur
-function registerUser($db) {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $username = $data['username'] ?? null;
-    $password = $data['password'] ?? null;
+function registerUser($db, $username, $password) {
 
     if (!$username || !$password) {
         echo json_encode(['ok' => false, 'messages' => ['username ou mot de passe manquant']]);
         return;
     }
 
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    // $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    $hashedPassword = $password;
 
-    $stmt = $db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
-    $stmt->execute(['username' => $username, 'password' => $hashedPassword]);
+    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
+    $stmt->bindparam(':username', $username);
+    $stmt->execute();
+    $row = $stmt->rowCount();
 
-    echo json_encode(['ok' => true, 'messages' => ['Utilisateur enregistré avec succès']]);
-}
-
-// Fonction pour effectuer une transaction
-function handleTransaction($db) {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $userGive = $data['user_give'] ?? null;
-    $userGet = $data['user_get'] ?? null;
-    $amount = $data['amount'] ?? null;
-    $description = $data['description'] ?? null;
-
-    if (!$userGive || !$userGet || !$amount || !$description) {
-        echo json_encode(['ok' => false, 'messages' => ['Données manquantes pour la transaction']]);
-        return;
+    if($row > 0)
+    {
+        echo json_encode(['ok' => false, 'messages' => ['Cet utilisateur existe déjà']]);
     }
-
-    // Vérifier que l'utilisateur a suffisamment de fonds
-    $stmt = $db->prepare("SELECT balance FROM users WHERE id = :userGive");
-    $stmt->execute(['userGive' => $userGive]);
-    $userGiveBalance = $stmt->fetch(PDO::FETCH_ASSOC)['balance'];
-
-    if ($userGiveBalance < $amount) {
-        echo json_encode(['ok' => false, 'messages' => ['Solde insuffisant']]);
-        return;
-    }
-
-    // Démarrer une transaction pour les mises à jour atomiques
-    try {
-        $db->beginTransaction();
-
-        // Insérer la transaction dans la table transactions
-        $stmt = $db->prepare("INSERT INTO transactions (user_give, user_get, amount, description) 
-                               VALUES (:userGive, :userGet, :amount, :description)");
-        $stmt->execute([
-            'userGive' => $userGive,
-            'userGet' => $userGet,
-            'amount' => $amount,
-            'description' => $description
-        ]);
-
-        // Mettre à jour les soldes des utilisateurs
-        $stmt = $db->prepare("UPDATE users SET balance = balance - :amount WHERE id = :userGive");
-        $stmt->execute(['amount' => $amount, 'userGive' => $userGive]);
-
-        $stmt = $db->prepare("UPDATE users SET balance = balance + :amount WHERE id = :userGet");
-        $stmt->execute(['amount' => $amount, 'userGet' => $userGet]);
-
-        // Commit de la transaction
-        $db->commit();
-
-        echo json_encode(['ok' => true, 'messages' => ['Transaction effectuée avec succès']]);
-    } catch (Exception $e) {
-        // En cas d'erreur, annuler la transaction
-        $db->rollBack();
-        echo json_encode(['ok' => false, 'messages' => ['Erreur lors de la transaction']]);
+    else
+    {
+        $stmt = $db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+        $stmt->bindparam(':username', $username);
+        $stmt->bindparam(':password', $hashedPassword);
+        $stmt->execute();
+        echo json_encode(['ok' => true, 'messages' => ['Utilisateur enregistré avec succès']]);
     }
 }
-
-// Fonction pour générer un fichier de transactions (Path Traversal)
-function generateTransactionsFile($db) {
-    // Récupérer toutes les transactions
-    $stmt = $db->query("SELECT * FROM transactions");
-    $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Construire le contenu du fichier
-    $fileContent = "ID,UserGive,UserGet,Amount,Date,Description\n";
-    foreach ($transactions as $transaction) {
-        $fileContent .= "{$transaction['id']},{$transaction['user_give']},{$transaction['user_get']},{$transaction['amount']},{$transaction['transaction_date']},\"{$transaction['description']}\"\n";
-    }
-
-    // Enregistrer le fichier dans 'uploads' pour Path Traversal
-    $filePath = __DIR__ . '/uploads/transactions.txt';
-    file_put_contents($filePath, $fileContent);
-
-    echo json_encode(['ok' => true, 'messages' => ['Fichier transactions généré'], 'file' => 'transactions.txt']);
-}
-
-function handleDeserializationForTransaction($db) {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $serializedData = $data['serializedData'] ?? null;
-    if (!$serializedData) {
-        echo json_encode(['ok' => false, 'messages' => ['Données sérialisées manquantes']]);
-        return;
-    }
-
-    // Désérialisation vulnérable
-    $transaction = json_decode($serializedData, true);
-
-    // Insertion dans la base de données sans validation
-    $stmt = $db->prepare("INSERT INTO transactions (user_give, user_get, amount, description) 
-                           VALUES (:userGive, :userGet, :amount, :description)");
-    $stmt->execute([
-        'userGive' => $transaction['user_give'],
-        'userGet' => $transaction['user_get'],
-        'amount' => $transaction['amount'],
-        'description' => $transaction['description']
-    ]);
-
-    echo json_encode(['ok' => true, 'messages' => ['Transaction créée avec succès']]);
-}
-
+ 
 ?>

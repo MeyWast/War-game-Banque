@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,12 +60,17 @@
     <div class="create-account-container">
         <img src="ISEN-Brest-1.png" alt="Bank Logo" class="logo">
         <h2>Create Account</h2>
-        <form id="createAccountForm">
-            <input type="text" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <button type="submit">Create Account</button>
-        </form>
+        <div>
+            <input type="text" name="username" id="user" placeholder="Username" required>
+            <input type="password" name="password" id="pwd" placeholder="Password" required>
+            <button type="submit" id="btn-submit" class="button"> Création du compte </button>
+            <p id="form-messages"></p>
+        </div>
+
     </div>
-    <script src="js/script.js"></script>
+
 </body>
 </html>
+
+<script src="js/ajax.js"></script>
+<script src="js/account.js"></script>
