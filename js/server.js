@@ -7,10 +7,10 @@ const app = express();
 const PORT = 3000;
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, '..'))); // Mettre à jour le chemin pour les fichiers statiques
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'account.html'));
+    res.sendFile(path.join(__dirname, '..', 'account.html')); // Mettre à jour le chemin pour account.html
 });
 
 app.post('/create-account', (req, res) => {
@@ -18,7 +18,7 @@ app.post('/create-account', (req, res) => {
 
     // Enregistrer les informations d'identification dans un fichier (ou une base de données)
     const userData = { username, password };
-    fs.writeFileSync('users.json', JSON.stringify(userData, null, 2));
+    fs.writeFileSync(path.join(__dirname, '..', 'users.json'), JSON.stringify(userData, null, 2)); // Mettre à jour le chemin pour users.json
 
     res.json({ success: true });
 });
