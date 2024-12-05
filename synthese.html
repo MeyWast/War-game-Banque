@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .account-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+        }
+        .account-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .balance {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .transactions {
+            margin-top: 20px;
+        }
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        .transaction:last-child {
+            border-bottom: none;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="account-container">
+        <img src="ISEN-Brest-1.png" alt="Bank Logo" class="logo">
+        <h2>Account Summary</h2>
+        <div class="balance">
+            Balance: $1,234.56
+        </div>
+        <div class="transactions">
+            <div class="transaction">
+                <span>Transaction 1</span>
+                <span>$100.00</span>
+            </div>
+            <div class="transaction">
+                <span>Transaction 2</span>
+                <span>$50.00</span>
+            </div>
+            <div class="transaction">
+                <span>Transaction 3</span>
+                <span>$200.00</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
