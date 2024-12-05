@@ -3,21 +3,22 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    balance NUMERIC(10, 2) DEFAULT 0.00
+    balance NUMERIC(10, 2) DEFAULT 0.00,
+    iban numeric(27, 0) DEFAULT 0
 );
 
 -- Insertion d'utilisateurs avec des soldes
-INSERT INTO users (username, password, balance)
+INSERT INTO users (username, password, balance, iban)
 VALUES 
-('admin', 'password123', 500.00), -- Solde initial de 500
-('alexandre', 'password123', 100.00), -- Solde initial de 100
-('clement', 'password123', 200.00); -   - Solde initial de 200
+('admin', 'password123', 500.00, 12345), -- Solde initial de 500
+('alexandre', 'password123', 100.00, 12345), -- Solde initial de 100
+('clement', 'password123', 200.00, 12345);   -- Solde initial de 200
 
 -- Création de la table des transactions
 CREATE TABLE IF NOT EXISTS transactions (
     id SERIAL PRIMARY KEY,
-    user_give INTEGER REFERENCES users(username),
-    user_get INTEGER REFERENCES users(username),
+    user_give INTEGER REFERENCES users(id),
+    user_get INTEGER REFERENCES users(id),
     amount NUMERIC(10, 2) NOT NULL,
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     description TEXT

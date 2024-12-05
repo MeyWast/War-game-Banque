@@ -54,13 +54,22 @@
 <body>
     <div class="account-container">
         <img src="ISEN-Brest-1.png" alt="Bank Logo" class="logo">
-        <h2>Account Summary</h2>
+        <h2>Bienvenue sur votre compe <div id='user'> </div> </h2>
         <div class="balance">
             Balance: <div id = 'balance'> </div>
         </div>
         <div id="transactions">
         </div>
-        <button id="downloadLogs">Télécharger les logs</button>
+        <button id="downloadLogs">Télécharger IBAN </button>
+    </div>
+
+    <div>
+        <h2> Nouvelle transaction </h2>
+        <input type="text" name="username" id="user_get" placeholder="Username" required>
+        <input type="text" name="balance" id="amount" placeholder="Somme à envoyer" required>
+        <input type = "text" name="description" id="description" placeholder="Message" required>
+        <button type="submit" id="btn-submit" class="button"> Realiser la transactions </button>
+        <p id="form-messages"></p>
     </div>
 </body>
 </html>
