@@ -13,7 +13,7 @@ $data = false;
 switch ($requestRessource) {
     case 'authentification':
         if ($requestMethod == 'GET') {
-            authenticateUser($db);
+            authenticateUser($db, $_GET['username'], $_GET['password']);
         }
         break;
 
@@ -48,24 +48,25 @@ switch ($requestRessource) {
 }
 
 // Fonction pour authentifier un utilisateur
-function authenticateUser($db) {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $username = $data['username'] ?? null;
-    $password = $data['password'] ?? null;
+function authenticateUser($db, $username, $password) {
 
     if (!$username || !$password) {
-        echo json_encode(['ok' => false, 'messages' => ['Username ou mot de passe manquant']]);
+        $message = $username + $password;
+        echo json_encode(['ok' => false, 'messages' => $message]);
         return;
     }
 
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
-    $stmt->execute(['username' => $username]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
+    $stmt->bindparam(':username', $username);
+    $stmt->bindparam(':password', $password);
+    $stmt->execute();
+    $row = $stmt->rowCount();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
-        echo json_encode(['ok' => true, 'messages' => ['Connexion réussie']]);
+    if($row > 0) {
+        echo json_encode(['ok' => true, 'messages' => ['Authentification réussie']]);
     } else {
-        echo json_encode(['ok' => false, 'messages' => ['username ou mot de passe incorrect']]);
+        echo json_encode(['ok' => false, 'messages' => ['Authentification échouée']]);
     }
 }
 
@@ -162,7 +163,6 @@ function generateTransactionsFile($db) {
     echo json_encode(['ok' => true, 'messages' => ['Fichier transactions généré'], 'file' => 'transactions.txt']);
 }
 
-// Fonction pour désérialiser des données et ajouter une transaction (Insecure Deserialization)
 function handleDeserializationForTransaction($db) {
     $data = json_decode(file_get_contents('php://input'), true);
     $serializedData = $data['serializedData'] ?? null;
