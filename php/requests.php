@@ -32,21 +32,27 @@ switch ($requestRessource) {
         }
         break;
 
-    case 'transaction':
-        if ($requestMethod == 'POST') {
-            handleTransaction($db);
-        }
-        break;
+    // case 'transaction':
+    //     if ($requestMethod == 'POST') {
+    //         handleTransaction($db);
+    //     }
+    //     break;
 
-    case 'generate-transactions-file':
+    // case 'generate-transactions-file':
+    //     if ($requestMethod == 'GET') {
+    //         generateTransactionsFile($db);
+    //     }
+    //     break;
+
+    // case 'create-transaction':
+    //     if ($requestMethod == 'POST') {
+    //         handleDeserializationForTransaction($db);
+    //     }
+    //     break;
+
+    case 'downloadLogs':
         if ($requestMethod == 'GET') {
-            generateTransactionsFile($db);
-        }
-        break;
-
-    case 'create-transaction':
-        if ($requestMethod == 'POST') {
-            handleDeserializationForTransaction($db);
+            dLFile($db, $_GET['file']);
         }
         break;
 
@@ -94,7 +100,7 @@ function getinfoUser($db, $username) {
 
 
     if($result) {
-        echo json_encode(['ok' => true, 'nbTr' => $row, 'transactions' => $transactions, 'balance' => $result['balance']]);
+        echo json_encode(['ok' => true, 'nbTr' => $row, 'user' => $username,'transactions' => $transactions, 'balance' => $result['balance']]);
     } else {
         echo json_encode(['ok' => false, 'messages' => ['Erreur lors de la récupération du solde']]);
 }
@@ -129,5 +135,17 @@ function registerUser($db, $username, $password) {
         echo json_encode(['ok' => true, 'messages' => ['Utilisateur enregistré avec succès']]);
     }
 }
- 
-?>
+
+
+function dLFile($db, $filePath) {
+    echo $filePath;
+    if (file_exists($filePath)) {
+        header('Content-Type: text/plain');
+        header('Content-Disposition: attachment; filename=" ' . $filePath . '"');
+        readfile($filePath);
+    } else {
+        header("HTTP/1.1 404 Not Found");
+        echo "Fichier introuvable.";
+    }
+}
+
