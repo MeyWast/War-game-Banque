@@ -150,9 +150,12 @@ function registerUser($db, $username, $password) {
     }
     else
     {
-        $stmt = $db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+        // crée un nombre aléatoire pour l'iban
+        $iban = rand(1000, 999999999);
+        $stmt = $db->prepare("INSERT INTO users (username, password, iban) VALUES (:username, :password, :iban)");
         $stmt->bindparam(':username', $username);
         $stmt->bindparam(':password', $hashedPassword);
+        $stmt->bindparam(':iban', $iban);
         $stmt->execute();
         echo json_encode(['ok' => true, 'messages' => ['Utilisateur enregistré avec succès']]);
 
