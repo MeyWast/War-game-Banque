@@ -19,7 +19,6 @@ function displayProfil(profil){
             amountColor = 'green';
         }
         
-    
         // Ajoute la transaction au DOM avec la couleur du montant
         document.getElementById('transactions').innerHTML += `
             <div class="transaction">

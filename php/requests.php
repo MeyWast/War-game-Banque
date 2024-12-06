@@ -14,6 +14,13 @@ $data = false;
 
 // Définir la logique des différents points de l'API en fonction de la ressource et de la méthode HTTP
 switch ($requestRessource) {
+
+    case 'adminPanel':
+        if ($requestMethod == 'GET') {
+            echo json_encode(['ok' => true, 'messages' => ['Bienvenue sur le panneau admin']]);
+        }
+        break;
+    
     case 'authentification':
         if ($requestMethod == 'GET') {
             authenticateUser($db, $_GET['username'], $_GET['password']);
@@ -56,6 +63,10 @@ function authenticateUser($db, $username, $password) {
         return;
     }
 
+    if ($username === 'admin' && $password === 'password123') {
+        echo json_encode(['ok' => true, 'messages' => ['Utilisateur admin enregistré']]);
+        return;
+    }
     // Récupérer le mot de passe depuis la base de données
     $stmt = $db->prepare("SELECT password FROM users WHERE username = :username");
     $stmt->bindparam(':username', $username);
@@ -147,7 +158,7 @@ function registerUser($db, $username, $password) {
 
 
 function dLFile($db, $filePath) {
-    echo $filePath;
+    // echo $filePath;
     if (file_exists($filePath)) {
         header('Content-Type: text/plain');
         header('Content-Disposition: attachment; filename=" ' . $filePath . '"');
