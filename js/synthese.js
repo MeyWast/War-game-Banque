@@ -1,34 +1,17 @@
 let username;
-ajaxRequest('GET', 'php/requests.php/synthese/', displayProfil);
+ajaxRequest('GET', 'php/requests.php/synthese/', (response) => {
+    displayProfil(response);
+});
 
+function displayProfil(profil) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(profil, "application/xml");
 
+    const productId = xmlDoc.getElementsByTagName("productId")[0].childNodes[0].nodeValue;
+    const balance = xmlDoc.getElementsByTagName("balance")[0].childNodes[0].nodeValue;
 
-function displayProfil(profil){
-    console.log(profil);
-    
-    username = profil.user;
-    document.getElementById('user').innerHTML = profil.user;
-    document.getElementById('balance').innerHTML = profil.balance;
-    for (const key in profil.transactions) {
-        const transaction = profil.transactions[key];
-        // const amountColor = transaction.user_give === profil.userid ? 'red' : 'green';
-
-        if (parseInt(transaction.user_give) === parseInt(profil.userid)) {
-            amountColor = 'red';
-        } else {
-            amountColor = 'green';
-        }
-        
-    
-        // Ajoute la transaction au DOM avec la couleur du montant
-        document.getElementById('transactions').innerHTML += `
-            <div class="transaction">
-                <span style="color: ${amountColor};">${transaction.amount}</span> 
-                ${transaction.description}
-            </div>
-        `;
-    }
-    
+    document.getElementById('user').innerHTML = productId;
+    document.getElementById('balance').innerHTML = balance;
 }
 
 document.getElementById('downloadLogs').addEventListener('click', () => {

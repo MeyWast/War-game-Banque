@@ -95,17 +95,16 @@ function getinfoUser($db, $username) {
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $stmt_tr = $db->prepare("SELECT user_give, amount, description FROM transactions WHERE user_give = :id OR user_get = :id");
-    $stmt_tr->bindparam(':id', $result['id']);
-    $stmt_tr->execute();
-    $row = $stmt_tr->rowCount();
-    $transactions = $stmt_tr->fetchAll(PDO::FETCH_ASSOC);
-
     if($result) {
-        echo json_encode(['ok' => true, 'nbTr' => $row, 'user' => $username, 'userid' => $result['id'], 'transactions' => $transactions, 'balance' => $result['balance']]);
+        header('Content-Type: application/xml');
+        $xml = new SimpleXMLElement('<stockCheck/>');
+        $xml->addChild('productId', $result['id']);
+        $xml->addChild('balance', $result['balance']);
+        echo $xml->asXML();
     } else {
+        header("HTTP/1.1 404 Not Found");
         echo json_encode(['ok' => false, 'messages' => ['Erreur lors de la récupération du solde']]);
-}
+    }
 }
 
 // Fonction pour enregistrer un utilisateur
