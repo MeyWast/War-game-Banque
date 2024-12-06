@@ -2,58 +2,59 @@
 
 ## Introduction
 
-Ce document explique comment installer, configurer et utiliser l'application bancaire ISEN Banque.
+This document explains how to install, configure, and use the ISEN Bank application.
 
 ## Installation
 
-### Prérequis
+### Prerequisites
 
 - Docker
 - Docker Compose
 
-### Étapes d'installation
+### Installation Steps
 
-1. Clonez le dépôt:
+1. Clone the repository:
     ```bash
-    git clone https://github.com/votre-repo/War-game-Banque.git
+    git clone https://github.com/your-repo/War-game-Banque.git
     cd War-game-Banque
     ```
 
-2. Construisez et démarrez les conteneurs Docker:
+2. Build and start the Docker containers:
     ```bash
     docker-compose up --build
     ```
 
-## Fonctionnement
+## Usage
 
-### Structure des fichiers
+### File Structure
 
-- `index.html`: Page de connexion.
-- `account.html`: Page de création de compte.
-- `synthese.html`: Page de synthèse du compte.
-- `js/`: Contient les scripts JavaScript pour les interactions front-end.
-- `php/`: Contient les scripts PHP pour les interactions back-end.
-- `sql/creation.sql`: Script SQL pour créer et initialiser la base de données.
+- `index.html`: Login page.
+- `account.html`: Account creation page.
+- `synthese.html`: Account summary page.
+- `js/`: Contains JavaScript scripts for front-end interactions.
+- `php/`: Contains PHP scripts for back-end interactions.
+- `sql/creation.sql`: SQL script to create and initialize the database.
 
-### Logique de l'application
+### Application Logic
 
-1. **Authentification**:
-    - L'utilisateur se connecte via `index.html`.
-    - Les informations sont envoyées à `php/requests.php` pour vérification.
+1. **Authentication**:
+    - The user logs in via `index.html`.
+    - The information is sent to `php/requests.php` for verification.
 
-2. **Création de compte**:
-    - L'utilisateur crée un compte via `account.html`.
-    - Les informations sont envoyées à `php/requests.php` pour enregistrement.
+2. **Account Creation**:
+    - The user creates an account via `account.html`.
+    - The information is sent to `php/requests.php` for registration.
 
-3. **Synthèse du compte**:
-    - L'utilisateur peut voir le solde et les transactions via `synthese.html`.
-    - Les informations sont récupérées de la base de données et affichées.
+3. **Account Summary**:
+    - The user can view the balance and transactions via `synthese.html`.
+    - The information is retrieved from the database and displayed.
 
-### Sécurité
+### Security
 
-- Les mots de passe sont stockés en utilisant le hachage MD5.
-- Les transactions sont vérifiées pour s'assurer que le solde est suffisant avant de les effectuer.
+- Passwords are stored using MD5 hashing.
+- Transactions are verified to ensure the balance is sufficient before processing.
 
 ## Conclusion
 
-Ce document fournit les informations nécessaires pour installer, configurer et comprendre le fonctionnement de l'application bancaire. Pour toute question ou problème, veuillez contacter l'équipe de développement.
+This document provides the necessary information to install, configure, and understand the operation of the banking application. For any questions or issues, please contact the development team.
+
