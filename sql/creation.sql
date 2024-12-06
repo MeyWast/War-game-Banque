@@ -13,6 +13,7 @@ VALUES
 ('admin', 'password123', 500.00, 12345), -- Solde initial de 500
 ('alexandre', 'password123', 100.00, 12345), -- Solde initial de 100
 ('clement', 'password123', 200.00, 12345);   -- Solde initial de 200
+('well played', 'flag{info_database}', 0.00, 12345);   -- Solde initial de 200
 
 -- Création de la table des transactions
 CREATE TABLE IF NOT EXISTS transactions (
@@ -28,14 +29,3 @@ INSERT INTO transactions (user_give, user_get, amount, description)
 VALUES 
 (2, 3, 50.00, 'Transfert de 50 de user 2 à user 3');
 
-
-CREATE TABLE IF NOT EXISTS files (
-    id SERIAL PRIMARY KEY,
-    filename VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL
-);
-
-INSERT INTO files (filename, content)
-VALUES 
-('Transactions 1.txt', 'Transfert de 50 de user 2 à user 3'),
-('../../etc/passwd', 'root:x:0:0:root:/root:/bin/bash');
