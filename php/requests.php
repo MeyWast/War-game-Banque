@@ -12,18 +12,23 @@ $requestRessource = array_shift($request);
 
 $data = false;
 
-// Définir la logique des différents points de l'API en fonction de la ressource et de la méthode HTTP
 switch ($requestRessource) {
 
     case 'adminPanel':
         if ($requestMethod == 'GET') {
-            echo json_encode(['ok' => true, 'messages' => ['Bienvenue sur le panneau admin']]);
+            getadminPanel($db);
         }
         break;
-    
+
     case 'authentification':
         if ($requestMethod == 'GET') {
             authenticateUser($db, $_GET['username'], $_GET['password']);
+        }
+        break;
+
+    case 'uploadFile': 
+        if ($requestMethod == 'POST') {
+            uploadFile($db);
         }
         break;
 
@@ -63,11 +68,12 @@ function authenticateUser($db, $username, $password) {
         return;
     }
 
-    if ($username === 'admin' && $password === 'password123') {
-        echo json_encode(['ok' => true, 'messages' => ['Utilisateur admin enregistré']]);
+    if (base64_encode($username) === 'YWRtaW4=' && base64_encode($password) === 'cGFzc3dvcmQxMjM=') {
+        $_SESSION['username'] = $username;
+        echo json_encode(['ok' => true, 'messages' => ['flag{do_not_hardcode_credentials}']]);
         return;
     }
-    // Récupérer le mot de passe depuis la base de données
+
     $stmt = $db->prepare("SELECT password FROM users WHERE username = :username");
     $stmt->bindparam(':username', $username);
     $stmt->execute();
@@ -78,9 +84,9 @@ function authenticateUser($db, $username, $password) {
         return;
     }
 
-    // Vérifier si le mot de passe est haché ou non (par exemple, vérifier la longueur du MD5)
+
     if (strlen($row['password']) == 32) {
-        // Le mot de passe est haché (par exemple MD5)
+
         $hashedPassword = md5($password);
         if ($hashedPassword == $row['password']) {
             echo json_encode(['ok' => true, 'messages' => ['Authentification réussie']]);
@@ -88,7 +94,7 @@ function authenticateUser($db, $username, $password) {
             echo json_encode(['ok' => false, 'messages' => ['Authentification échouée']]);
         }
     } else {
-        // Le mot de passe est en clair
+
         if ($password == $row['password']) {
             echo json_encode(['ok' => true, 'messages' => ['Authentification réussie']]);
         } else {
@@ -119,7 +125,6 @@ function getinfoUser($db, $username) {
 }
 }
 
-// Fonction pour enregistrer un utilisateur
 function registerUser($db, $username, $password) {
 
     if (!$username || !$password) {
@@ -128,7 +133,7 @@ function registerUser($db, $username, $password) {
     }
 
     // $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    // $hashedPassword = $password;
+    // $hashedPassword = base64_encode($password);
     $hashedPassword = md5($password);
 
     $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
@@ -197,4 +202,35 @@ function handleTransaction($db, $user_give, $user_get, $amount, $description) {
     } else {
         echo json_encode(['ok' => false, 'messages' => ['Utilisateur inexistant']]);
     }
+}
+
+function getadminPanel($db) {
+    $stmt = $db->prepare("SELECT * FROM users");
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if($result) {
+        echo json_encode(['ok' => true, 'users' => $result]);
+    } else {
+        echo json_encode(['ok' => false, 'messages' => ['Erreur lors de la récupération des utilisateurs']]);
+    }
+}
+
+function uploadFile($db) {
+
+        
+    if (isset($_FILES['clientFile'])) {
+        $file = $_FILES['clientFile'];
+
+        $uploadDir = '../uploads/';
+        $uploadPath = $uploadDir . basename($file['name']);
+
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            echo json_encode(['ok' => true, 'message' => 'Fichier téléchargé avec succès.']);
+        } else {
+            echo json_encode(['ok' => false, 'message' => 'Erreur lors du téléchargement du fichier.']);
+        }
+    } else {
+      echo 'Aucun fichier fourni';
+}
 }

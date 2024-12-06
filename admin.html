@@ -1,1 +1,122 @@
-vous avez pas le droit d'acceder a cette page normalement   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Gestion Utilisateurs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .upload-container, .user-management {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .upload-container h2, .user-management h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        input[type="file"], input[type="text"], input[type="number"] {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            margin-top: 15px;
+            background-color: #3498db;
+        }
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .user-list {
+            text-align: left;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .user-list li {
+            margin: 5px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        .user-list li .balance {
+            color: green;
+        }
+        .user-list li .iban {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h2>Admin - Upload Fiche Client</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="clientFile" accept="*" required>
+            <button type="submit" id="btn-submit">Upload</button>
+        </form>
+        
+        <p id="uploadMessage"></p>
+    </div>
+
+    <div class="user-management">
+
+        <h3>Liste des Utilisateurs</h3>
+        <div class="user-list" id="userList">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Balance</th>
+                        <th>IBAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Liste des utilisateurs ajoutés -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+<script src="js/ajax.js"></script>
+<script src="js/admin.js"></script>
+
+</html>
