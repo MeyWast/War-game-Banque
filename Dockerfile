@@ -5,8 +5,8 @@ FROM php:7.4-apache
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     postgresql-client \
-    php-xml \
-    && docker-php-ext-install pdo pdo_pgsql 
+    libxml2-dev \
+    && docker-php-ext-install pdo pdo_pgsql xml
 
 # Copier les fichiers de votre application dans le conteneur
 COPY --chown=www-data:www-data . /var/www/html/
