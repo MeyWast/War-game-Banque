@@ -24,7 +24,7 @@ En manipulant les paramètres de la requête, un attaquant peut accéder à des 
 **Exploitation :**
 Un attaquant peut envoyer une requête avec un chemin de fichier malveillant, par exemple `../../etc/passwd`, pour lire le contenu du fichier `/etc/passwd`.
 
-### Remote code execution
+### RCE via file upload
 
 **Description :**
 L'application permet l'exécution de code à distance en raison d'une validation insuffisante des entrées utilisateur. Cela peut permettre à un attaquant d'exécuter des commandes arbitraires sur le serveur.
@@ -35,7 +35,7 @@ Dans le fichier `requests.php`, la fonction `dLFile` prend un chemin de fichier 
 **Exploitation :**
 Dans la fonction `dLFile`, un attaquant pourrait manipuler le paramètre file pour inclure des chemins de fichiers arbitraires, ce qui pourrait permettre l'accès à des fichiers sensibles ou l'exécution de commandes malveillantes.
 
-### Bibliothèque vulnérable
+### Vulnerable library
 
 **Description :**
 L'application utilise des bibliothèques connues pour avoir des vulnérabilités.
@@ -60,7 +60,7 @@ Dans le fichier `requests.php`, la fonction `getinfoUser` récupère les informa
 Un attaquant pourrait manipuler les paramètres de la requête pour accéder aux informations d'autres utilisateurs et accéder à des pages non autorisées: admin.hmtl
 
 
-### Exposition de mot de passe encodé
+### Encoded Password Exposure
 
 **Description :**
 Dans le code de l'application dans le fichier `requests.php` le mot de passe est encodé en base64, ce qui l'expose directement.
@@ -72,7 +72,7 @@ Un attaquant peut réussir à retrouver le mot de passe en le décodant.
 En interceptant le mot de passe encodé en base64, l'attaquant le décode et peut accéder au compte.
 
 
-### Injection SQL
+### SQL Injection
 **Description :**
 L'application permet de renseigner des transactions sur la page `synthese.html`. Le champ transactions n'est pas sécurisé permettant à un utilisateur d'éxecuter du code.
 
@@ -83,7 +83,7 @@ En renseignant du code SQL à la place de texte, l'attaquant va pouvoir accéder
 En injectant une commande SQL dans le champ de texte, le serveur va executer la commande vers la base de données client. Le résultat est affiché dans la partie transactions de la page.
 
 
-### Entité externe XML (XXE)
+### XXE
 **Description :**
 L'application accepte des fichiers XML pour traiter certaines données. Cependant, elle ne désactive pas la résolution des entités externes, ce qui permet à un attaquant d'injecter des entités externes malveillantes.
 
