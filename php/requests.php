@@ -1,4 +1,5 @@
 <?php
+// phpinfo();
 require_once('database.php');
 
 session_start();
@@ -27,7 +28,9 @@ switch ($requestRessource) {
         break;
 
     case 'uploadFile': 
+        echo 'je suis un fichier';
         if ($requestMethod == 'POST') {
+            echo "je suis dans le if";
             uploadFile($db);
         }
         break;
@@ -217,20 +220,64 @@ function getadminPanel($db) {
 }
 
 function uploadFile($db) {
-
-        
+    echo 'je suis un fichier upload';
+    echo $_FILES['clientFile'];
     if (isset($_FILES['clientFile'])) {
         $file = $_FILES['clientFile'];
-
         $uploadDir = '../uploads/';
         $uploadPath = $uploadDir . basename($file['name']);
+        
+        // echo 'je suis dans le isset';
+        if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'xml') {
+            $xmlContent = file_get_contents($file['tmp_name']);
+            echo 'je suis dans le xml 1';
+            libxml_disable_entity_loader(false); 
+            try
+            {
+                echo 'avant le dom';
+                $dom = new DOMDocument();
+                echo 'après le dom';
+            }
+            catch (Exception $e)
+            {
+                echo 'je suis dans une erreur';
+    
+            }
 
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            echo json_encode(['ok' => true, 'message' => 'Fichier téléchargé avec succès.']);
+            try {
+                $dom->loadXML($xmlContent, LIBXML_NOENT | LIBXML_DTDLOAD);
+                $data = simplexml_import_dom($dom);
+
+                $dataArray = json_decode(json_encode($data), true);
+
+                if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+                    echo json_encode([
+                        'ok' => true, 
+                        'message' => 'Fichier XML traité et téléchargé.', 
+                        'data' => $dataArray,
+                        'filePath' => $uploadPath
+                    ]);
+                } else {
+                    echo json_encode([
+                        'ok' => false, 
+                        'message' => 'Fichier XML traité mais non téléchargé.'
+                    ]);
+                }
+            } catch (Exception $e) {
+                echo json_encode([
+                    'ok' => false, 
+                    'message' => 'Erreur lors du traitement du fichier XML.', 
+                    'error' => $e->getMessage()
+                ]);
+            }
         } else {
-            echo json_encode(['ok' => false, 'message' => 'Erreur lors du téléchargement du fichier.']);
+            if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+                echo json_encode(['ok' => true, 'message' => 'Fichier téléchargé avec succès.']);
+            } else {
+                echo json_encode(['ok' => false, 'message' => 'Erreur lors du téléchargement du fichier.']);
+            }
         }
     } else {
-      echo 'Aucun fichier fourni';
-}
+        echo json_encode(['ok' => false, 'message' => 'Aucun fichier fourni.']);
+    }
 }

@@ -5,13 +5,14 @@ FROM php:7.4-apache
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     postgresql-client \
-    && docker-php-ext-install pdo pdo_pgsql
+    php-xml \
+    && docker-php-ext-install pdo pdo_pgsql 
 
 # Copier les fichiers de votre application dans le conteneur
 COPY . /var/www/html/
 
 # Copier et configurer votre fichier de création de base de données
-COPY sql/creation.sql /docker-entrypoint-initdb.d/
+# COPY sql/creation.sql /docker-entrypoint-initdb.d/
 
 # Exposer le port d'Apache
 EXPOSE 80
