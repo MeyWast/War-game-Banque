@@ -7,8 +7,8 @@ services:
       - "80:80"
     depends_on:
       - db
-    volumes:
-      - .:/var/www/html
+    #volumes:
+      #- .:/var/www/html
 
   db:
     image: postgres:13

@@ -25,6 +25,7 @@ En manipulant les paramètres de la requête, un attaquant peut accéder à des 
 Un attaquant peut envoyer une requête avec un chemin de fichier malveillant, par exemple `../../etc/passwd`, pour lire le contenu du fichier `/etc/passwd`.
 
 ### Remote code execution
+
 **Description :**
 L'application permet l'exécution de code à distance en raison d'une validation insuffisante des entrées utilisateur. Cela peut permettre à un attaquant d'exécuter des commandes arbitraires sur le serveur.
 
@@ -35,8 +36,7 @@ Dans le fichier `requests.php`, la fonction `dLFile` prend un chemin de fichier 
 Dans la fonction `dLFile`, un attaquant pourrait manipuler le paramètre file pour inclure des chemins de fichiers arbitraires, ce qui pourrait permettre l'accès à des fichiers sensibles ou l'exécution de commandes malveillantes.
 
 ### Bibliothèque vulnérable
-MD5
-libxml
+
 **Description :**
 L'application utilise des bibliothèques connues pour avoir des vulnérabilités.
 
@@ -44,10 +44,12 @@ L'application utilise des bibliothèques connues pour avoir des vulnérabilités
 Les librairies MD5 et libxml sont utilisées.
 
 **Exploitation :**
+Il est possible de retrouver les messages encodés avec MD5. L'attaquant peut facilement décoder le message. Pour libxml, l'attaque XXE est possible permettant de lire des fichiers arbitraires sur le système de fichier.
 
 
 
 ### IDOR
+
 **Description :**
 L'application permet aux utilisateurs d'accéder ou de manipuler des ressources auquelles ils ne devraient pas avoir accès en modifiant une entrée d'une requête.
 
@@ -55,7 +57,7 @@ L'application permet aux utilisateurs d'accéder ou de manipuler des ressources 
 Dans le fichier `requests.php`, la fonction `getinfoUser` récupère les informations de l'utilisateur enregistré. Il n'y a pas de vérification pour s'assurer que l'utilisateur authentifié est autorisé à accéder à ces informations.
 
 **Exploitation :**
-Un attaquant pourrait manipuler les paramètres de la requête pour accéder aux informations d'autres utilisateurs.
+Un attaquant pourrait manipuler les paramètres de la requête pour accéder aux informations d'autres utilisateurs et accéder à des pages non autorisées: admin.hmtl
 
 
 ### Exposition de mot de passe encodé
@@ -72,13 +74,21 @@ En interceptant le mot de passe encodé en base64, l'attaquant le décode et peu
 
 ### Injection SQL
 **Description :**
-L'application permet de renseigner des transactions sur la page `synthese.html`. Le champ ... n'est pas sécurisé permettant à un utilisateur d'éxecuter du code.
+L'application permet de renseigner des transactions sur la page `synthese.html`. Le champ transactions n'est pas sécurisé permettant à un utilisateur d'éxecuter du code.
 
 **Fonctionnalité :**
 En renseignant du code SQL à la place de texte, l'attaquant va pouvoir accéder aux informations de la base de données.
 
 **Exploitation :**
-En injectant une commande SQL dans le champ de texte, le serveur va executer la commande vers la base de données client. Le résultat est affiché dans la partie transactions
+En injectant une commande SQL dans le champ de texte, le serveur va executer la commande vers la base de données client. Le résultat est affiché dans la partie transactions de la page.
 
 
 ### Entité externe XML (XXE)
+**Description :**
+L'application accepte des fichiers XML pour traiter certaines données. Cependant, elle ne désactive pas la résolution des entités externes, ce qui permet à un attaquant d'injecter des entités externes malveillantes.
+
+**Fonctionnalité :**
+En soumettant un fichier XML contenant une entité externe dans l'upload de fichier, l'attaquant peut forcer l'application à lire des fichiers arbitraires sur le serveur ou à effectuer des requêtes réseau non autorisées.
+
+**Exploitation :**
+En uploadant un fichier XML modifié à l'application, l'attaquant peut accéder à des fichiers sensibles sur le serveur.
