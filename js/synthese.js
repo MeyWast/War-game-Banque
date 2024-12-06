@@ -9,6 +9,11 @@ function displayProfil(profil){
     username = profil.user;
     document.getElementById('user').innerHTML = profil.user;
     document.getElementById('balance').innerHTML = profil.balance;
+
+    if(profil.user === 'admin'){
+        document.getElementById('admin').style.display = 'block';
+    }
+
     for (const key in profil.transactions) {
         const transaction = profil.transactions[key];
         // const amountColor = transaction.user_give === profil.userid ? 'red' : 'green';
