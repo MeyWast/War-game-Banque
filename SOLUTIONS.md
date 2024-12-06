@@ -1,36 +1,84 @@
 # SOLUTIONS
 
-## Vulnerabilities
+## Vulnérabilités
 
-### 1. Default Service Credentials
+### 1. Default Credentials
 
-**Description:**
-The application uses default credentials for certain services, such as the user `admin` with the password `password123`. These default credentials are often well-known and can be easily guessed by attackers.
+**Description :**
+L'application utilise des identifiants par défaut pour certains services, tels que l'utilisateur `admin` avec le mot de passe `password123`. Ces identifiants par défaut sont souvent bien connus et peuvent être facilement devinés par les attaquants.
 
-**Functionality:**
-During authentication, if an attacker uses the default credentials, they can access administrative or sensitive features of the application.
+**Fonctionnalité :**
+Lors de l'authentification, si un attaquant utilise les identifiants par défaut, il peut accéder aux fonctionnalités administratives ou sensibles de l'application.
 
-**Exploitation:**
-An attacker can simply try the default credentials to access the application. For example, using `admin` and `password123` on the login page.
+**Exploitation :**
+Un attaquant peut simplement essayer les identifiants par défaut pour accéder à l'application. Par exemple, en utilisant `admin` et `password123` sur la page de connexion.
 
-### 2. Path Traversal / Local File Inclusion (LFI)
+### 2. Path traversals / LFI
 
-**Description:**
-The application allows users to download files without properly verifying the requested file path. This can allow an attacker to read sensitive files on the server.
+**Description :**
+L'application permet aux utilisateurs de télécharger des fichiers sans vérifier correctement le chemin du fichier demandé. Cela peut permettre à un attaquant de lire des fichiers sensibles sur le serveur.
 
-**Functionality:**
-By manipulating the request parameters, an attacker can access files outside the intended directory, such as `/etc/passwd`.
+**Fonctionnalité :**
+En manipulant les paramètres de la requête, un attaquant peut accéder à des fichiers en dehors du répertoire prévu, tels que `/etc/passwd`.
 
-**Exploitation:**
-An attacker can send a request with a malicious file path, for example `../../etc/passwd`, to read the contents of the `/etc/passwd` file.
+**Exploitation :**
+Un attaquant peut envoyer une requête avec un chemin de fichier malveillant, par exemple `../../etc/passwd`, pour lire le contenu du fichier `/etc/passwd`.
 
-### 3. XML External Entity (XXE)
+### Remote code execution
+**Description :**
+L'application permet l'exécution de code à distance en raison d'une validation insuffisante des entrées utilisateur. Cela peut permettre à un attaquant d'exécuter des commandes arbitraires sur le serveur.
 
-**Description:**
-The application can process XML inputs without disabling external entities, allowing an attacker to include malicious external entities in XML documents.
+**Fonctionnalité :**
+Dans le fichier `requests.php`, la fonction `dLFile` prend un chemin de fichier en entrée sans validation suffisante.
 
-**Functionality:**
-An attacker can inject external entities into an XML document to read local files or perform network requests from the server.
+**Exploitation :**
+Dans la fonction `dLFile`, un attaquant pourrait manipuler le paramètre file pour inclure des chemins de fichiers arbitraires, ce qui pourrait permettre l'accès à des fichiers sensibles ou l'exécution de commandes malveillantes.
 
-**Exploitation:**
-An attacker can send an XML document containing an external entity, for example `<!ENTITY xxe SYSTEM "file:///etc/passwd">`, to read the contents of the `/etc/passwd` file.
+### Bibliothèque vulnérable
+MD5
+libxml
+**Description :**
+L'application utilise des bibliothèques connues pour avoir des vulnérabilités.
+
+**Fonctionnalité :**
+Les librairies MD5 et libxml sont utilisées.
+
+**Exploitation :**
+
+
+
+### IDOR
+**Description :**
+L'application permet aux utilisateurs d'accéder ou de manipuler des ressources auquelles ils ne devraient pas avoir accès en modifiant une entrée d'une requête.
+
+**Fonctionnalité :**
+Dans le fichier `requests.php`, la fonction `getinfoUser` récupère les informations de l'utilisateur enregistré. Il n'y a pas de vérification pour s'assurer que l'utilisateur authentifié est autorisé à accéder à ces informations.
+
+**Exploitation :**
+Un attaquant pourrait manipuler les paramètres de la requête pour accéder aux informations d'autres utilisateurs.
+
+
+### Exposition de mot de passe encodé
+
+**Description :**
+Dans le code de l'application dans le fichier `requests.php` le mot de passe est encodé en base64, ce qui l'expose directement.
+
+**Fonctionnalité :**
+Un attaquant peut réussir à retrouver le mot de passe en le décodant.
+
+**Exploitation :**
+En interceptant le mot de passe encodé en base64, l'attaquant le décode et peut accéder au compte.
+
+
+### Injection SQL
+**Description :**
+L'application permet de renseigner des transactions sur la page `synthese.html`. Le champ ... n'est pas sécurisé permettant à un utilisateur d'éxecuter du code.
+
+**Fonctionnalité :**
+En renseignant du code SQL à la place de texte, l'attaquant va pouvoir accéder aux informations de la base de données.
+
+**Exploitation :**
+En injectant une commande SQL dans le champ de texte, le serveur va executer la commande vers la base de données client. Le résultat est affiché dans la partie transactions
+
+
+### Entité externe XML (XXE)
