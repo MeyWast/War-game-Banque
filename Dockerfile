@@ -1,20 +1,22 @@
-# Utiliser une image Node.js officielle comme image de base
-FROM node:14
+# Utilisation de l'image officielle d'Apache
+FROM php:7.4-apache
 
-# Définir le répertoire de travail dans le conteneur
-WORKDIR /app
+# Installation des extensions nécessaires pour PostgreSQL et d'autres outils
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    postgresql-client \
+    && docker-php-ext-install pdo pdo_pgsql
 
-# Copier package.json et package-lock.json
-COPY package*.json ./
+# Copier les fichiers de votre application dans le conteneur
+COPY . /var/www/html/
 
-# Installer les dépendances
-RUN npm install
+# Copier et configurer votre fichier de création de base de données
+COPY sql/creation.sql /docker-entrypoint-initdb.d/
 
-# Copier le reste des fichiers de l'application
-COPY . .
+# Exposer le port d'Apache
+EXPOSE 80
 
-# Exposer le port sur lequel l'application va s'exécuter
-EXPOSE 3000
+# Commande pour démarrer Apache
+CMD ["apache2-foreground"]
 
-# Démarrer l'application
-CMD ["node", "js/server.js"]
+

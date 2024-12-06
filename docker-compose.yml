@@ -1,10 +1,24 @@
-version: '3'
+version: '3.8'
+
 services:
   web:
     build: .
     ports:
-      - "3000:3000"
+      - "80:80"
+    depends_on:
+      - db
     volumes:
-      - .:/app
+      - .:/var/www/html
+
+  db:
+    image: postgres:13
     environment:
-      NODE_ENV: development
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./creation.sql:/docker-entrypoint-initdb.d/creation.sql
+
+volumes:
+  pgdata:
