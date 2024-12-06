@@ -7,70 +7,98 @@
     <title>Create Account</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-        }
-        .create-account-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            margin: auto;
-            border: 1px solid #ccc;
-        }
-        .create-account-container h2 {
-            margin-bottom: 20px;
             color: #333;
         }
+
+        .create-account-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            margin: auto;
+            border: 1px solid #ddd;
+        }
+
+        .create-account-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
         .create-account-container input[type="text"],
         .create-account-container input[type="password"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            width: 100%;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
+            font-size: 16px;
         }
+
+        .create-account-container input[type="text"]:focus,
+        .create-account-container input[type="password"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
         .create-account-container button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
         .create-account-container button:hover {
             background-color: #45a049;
         }
+
+        .create-account-container button:active {
+            background-color: #3e8e41;
+        }
+
         .logo {
             display: block;
             margin: 0 auto 20px;
-            width: 200px;
+            width: 150px;
         }
+
+        .form-message {
+            text-align: center;
+            color: red;
+            font-size: 14px;
+        }
+
     </style>
 </head>
+
 <body>
     <div class="create-account-container">
         <img src="ISEN-Brest-1.png" alt="Bank Logo" class="logo">
         <h2>Create Account</h2>
-        <div>
+        <div id="create-account-form">
             <input type="text" name="username" id="user" placeholder="Username" required>
             <input type="password" name="password" id="pwd" placeholder="Password" required>
-            <button type="submit" id="btn-submit" class="button"> Création du compte </button>
-            <p id="form-messages"></p>
-        </div>
-
+            <button type="submit" id="btn-submit">Create Account</button>
+            <p id="form-messages" class="form-message"></p>
+    </div>
     </div>
 
+    <script src="js/ajax.js"></script>
+    <script src="js/account.js"></script>
 </body>
-</html>
 
-<script src="js/ajax.js"></script>
-<script src="js/account.js"></script>
+</html>

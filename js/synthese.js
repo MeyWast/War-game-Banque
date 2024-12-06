@@ -4,14 +4,31 @@ ajaxRequest('GET', 'php/requests.php/synthese/', displayProfil);
 
 
 function displayProfil(profil){
-    console.log(profil.balance);
+    console.log(profil);
     
     username = profil.user;
     document.getElementById('user').innerHTML = profil.user;
     document.getElementById('balance').innerHTML = profil.balance;
     for (const key in profil.transactions) {
-        document.getElementById('transactions').innerHTML += `<li>${profil.transactions[key].amount} ${profil.transactions[key].description}</li>`;
+        const transaction = profil.transactions[key];
+        // const amountColor = transaction.user_give === profil.userid ? 'red' : 'green';
+
+        if (parseInt(transaction.user_give) === parseInt(profil.userid)) {
+            amountColor = 'red';
+        } else {
+            amountColor = 'green';
+        }
+        
+    
+        // Ajoute la transaction au DOM avec la couleur du montant
+        document.getElementById('transactions').innerHTML += `
+            <div class="transaction">
+                <span style="color: ${amountColor};">${transaction.amount}</span> 
+                ${transaction.description}
+            </div>
+        `;
     }
+    
 }
 
 document.getElementById('downloadLogs').addEventListener('click', () => {
