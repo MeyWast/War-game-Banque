@@ -11,6 +11,12 @@ This document explains how to install, configure, and use the ISEN Bank applicat
 - Docker
 - Docker Compose
 
+#### Installing Docker
+
+1. Download and install Docker Desktop from [Docker's official website](https://www.docker.com/products/docker-desktop).
+2. Follow the installation instructions for your operating system.
+3. Once the installation is complete, launch Docker Desktop and ensure it is running correctly.
+
 ### Installation Steps
 
 1. Clone the repository:
