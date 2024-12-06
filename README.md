@@ -21,7 +21,7 @@ This document explains how to install, configure, and use the ISEN Bank applicat
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-repo/War-game-Banque.git
+    git clone https://github.com/MeyWast/War-game-Banque.git
     cd War-game-Banque
     ```
 
