@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   web:
@@ -13,9 +13,9 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      POSTGRES_USER: banking_user
+      POSTGRES_PASSWORD: new_password
+      POSTGRES_DB: banking_app
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./creation.sql:/docker-entrypoint-initdb.d/creation.sql

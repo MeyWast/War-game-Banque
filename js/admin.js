@@ -35,20 +35,27 @@ document.getElementById('btn-submit').addEventListener('click', function (event)
     var formData = new FormData();
     formData.append('clientFile', file);
 
-    // Créer une requête AJAX diff des autres car sinon le dl du fichier fctionne pas
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'php/requests.php/uploadFile', true);
 
-    // Gérer la réponse de la requête
     xhr.onload = function () {
         if (xhr.status === 200) {
             console.log('Fichier téléchargé avec succès:', xhr.responseText);
         } else {
             console.log('Erreur lors du téléchargement du fichier');
+            console.log(xhr.status);
+            console.log(xhr.responseText);
         }
     };
 
-    // Envoyer la requête avec le fichier
-    xhr.send(formData);
+    try 
+    {
+        xhr.send(formData);
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
+
 });
 
