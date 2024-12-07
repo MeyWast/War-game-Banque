@@ -14,7 +14,7 @@ services:
       POSTGRES_DB: banking_app
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./creation.sql:/docker-entrypoint-initdb.d/creation.sql
+      - ./sql/creation.sql:/docker-entrypoint-initdb.d/creation.sql
 
 volumes:
   pgdata:

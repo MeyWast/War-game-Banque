@@ -12,7 +12,7 @@ INSERT INTO users (username, password, balance, iban)
 VALUES 
 ('admin', 'password123', 500.00, 12345), -- Solde initial de 500
 ('alexandre', 'password123', 100.00, 12345), -- Solde initial de 100
-('clement', 'password123', 200.00, 12345);   -- Solde initial de 200
+('clement', 'password123', 200.00, 12345),   -- Solde initial de 200
 ('well played', 'flag{info_database}', 0.00, 12345);   -- Solde initial de 200
 
 -- Création de la table des transactions
